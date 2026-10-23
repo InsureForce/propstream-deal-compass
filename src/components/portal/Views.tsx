@@ -5,6 +5,9 @@ import { usePortal, ACCENTS } from "./context";
 import { activity, agents, brokers, daysBetween, exchanges, fmtM, fmtUSD, invoices, iosDeals, offices, stnlDeals, TODAY, type NavKey } from "./data";
 import { Underwriting } from "./Underwriting";
 import { DealBoard } from "./DealBoard";
+import { TaxClock } from "./TaxClock";
+import { Copilot } from "./Copilot";
+import { Billing } from "./Billing";
 import { Badge, Card, CardHeader, Field, inputCls, PageHeader, Progress, Stat, Toggle } from "./ui";
 
 const ME = "Marcus Delgado";
@@ -268,99 +271,3 @@ function ExchangeList({ list }: { list: typeof exchanges }) {
   );
 }
 
-function TaxClock() {
-  const { role } = usePortal();
-  const list = role === "Broker" ? exchanges.filter((e) => e.broker === ME) : exchanges;
-  return (
-    <>
-      <PageHeader eyebrow="IRC §1031" title="1031 Tax Clock" sub="45-day identification and 180-day exchange deadlines, counted from relinquished-property closing." />
-      <div className="grid gap-4 md:grid-cols-3">
-        <Stat label="Active Exchanges" value={String(list.length)} icon={<Timer className="h-4 w-4" />} />
-        <Stat label="Proceeds in QI Escrow" value={fmtM(list.reduce((a, e) => a + e.proceeds, 0))} icon={<DollarSign className="h-4 w-4" />} />
-        <Stat label="As of" value="Oct 23" icon={<Activity className="h-4 w-4" />} />
-      </div>
-      <Card className="mt-6"><CardHeader title="Exchange Deadlines" /><ExchangeList list={list} /></Card>
-    </>
-  );
-}
-
-const SUGGESTIONS: string[] = ["Draft an OM summary for Starbucks — Frisco, TX", "Compare cap rates for Dollar General in GA", "Find 1031 replacements for Henderson Trust under $4.5M"];
-const REPLIES: Record<string, string> = {
-  [SUGGESTIONS[0] as string]: "Offering Summary — Starbucks, 8,950 Preston Rd, Frisco TX. $3,150,000 at a 5.35% cap ($168,525 NOI). 10-year corporate NNN lease with 10% bumps every 5 years, drive-thru pad on a 0.92-acre outparcel. Trade area: 142K population within 3 miles, $134K AHHI. Tenant: Starbucks Corp (S&P BBB+).",
-  [SUGGESTIONS[1] as string]: "Trailing-12 Dollar General comps in Georgia: median cap 6.62% (n=14). Range 6.15% (McDonough, 15-yr) to 7.40% (rural Waycross, 7 yrs remaining). Your McDonough close at 6.75% priced ~13 bps wide of median, consistent with its 2019 vintage.",
-  [SUGGESTIONS[2] as string]: "3 matches: (1) Wawa — Brandon, FL $6.4M — exceeds budget, consider TIC. (2) O'Reilly — Gastonia, NC $2.24M at 5.90%. (3) Chick-fil-A GL — Gilbert, AZ $4.275M at 4.25%. Option 3 fully absorbs $4.2M proceeds with minimal boot.",
-};
-
-function Copilot() {
-  const [msgs, setMsgs] = useState<{ me: boolean; t: string }[]>([
-    { me: false, t: "Hi — I'm your PropStream Copilot. I can draft offering memos, pull cap-rate comps, and match 1031 buyers to listings." },
-  ]);
-  const [q, setQ] = useState("");
-  const send = (text: string) => {
-    if (!text.trim()) return;
-    const reply = REPLIES[text] ?? "Analyzing across 2,400 closed STNL & IOS transactions… Based on current Sun Belt market data, net-lease cap rates have expanded ~35 bps YoY, with investment-grade QSR ground leases holding firmest near 4.5%.";
-    setMsgs((m) => [...m, { me: true, t: text }, { me: false, t: reply }]);
-    setQ("");
-  };
-  return (
-    <>
-      <PageHeader eyebrow="Intelligence" title="AI Copilot" sub="Grounded in your firm's deal history and national comp data." />
-      <Card className="flex h-[560px] flex-col">
-        <div className="flex-1 space-y-4 overflow-y-auto p-6">
-          {msgs.map((m, i) => (
-            <div key={i} className={cn("fade-up max-w-2xl rounded-lg px-4 py-3 text-sm leading-relaxed", m.me ? "ml-auto bg-primary text-primary-foreground" : "border bg-muted/40")}>
-              {!m.me && <Sparkles className="mb-1 h-3.5 w-3.5 text-brand" />}{m.t}
-            </div>
-          ))}
-        </div>
-        <div className="border-t p-4">
-          <div className="mb-3 flex flex-wrap gap-2">
-            {SUGGESTIONS.map((s) => <button key={s} onClick={() => send(s)} className="rounded-full border px-3 py-1 text-xs transition hover:border-brand hover:text-brand">{s}</button>)}
-          </div>
-          <form onSubmit={(e) => { e.preventDefault(); send(q); }} className="flex gap-2">
-            <input className={inputCls} placeholder="Ask about a deal, tenant, or market…" value={q} onChange={(e) => setQ(e.target.value)} />
-            <button className="grid w-11 place-items-center rounded-md bg-brand text-brand-foreground"><Send className="h-4 w-4" /></button>
-          </form>
-        </div>
-      </Card>
-    </>
-  );
-}
-
-function Billing() {
-  const { settings: s } = usePortal();
-  return (
-    <>
-      <PageHeader eyebrow="Account" title="Enterprise Billing" sub="Meridian Commercial Realty · Enterprise plan · $600 / seat / month" />
-      <div className="grid gap-4 md:grid-cols-3">
-        <Stat label="Current Invoice" value="$18,600" icon={<DollarSign className="h-4 w-4" />} />
-        <Stat label="Active Seats" value="31" icon={<Users className="h-4 w-4" />} />
-        <Stat label="Next Renewal" value="Mar 1" icon={<Timer className="h-4 w-4" />} />
-      </div>
-      <div className="mt-6 grid gap-6 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader title="Invoices" />
-          <table className="w-full text-sm">
-            <tbody className="divide-y">
-              {invoices.map((i) => (
-                <tr key={i.id} className="hover:bg-muted/50">
-                  <td className="px-5 py-3.5 font-mono">{i.id}</td><td>{i.period}</td><td className="text-muted-foreground">{i.seats} seats</td>
-                  <td className="font-mono">{fmtUSD(i.amount)}</td><td><Badge>{i.status}</Badge></td>
-                  <td className="pr-5 text-right"><Download className="ml-auto h-4 w-4 text-muted-foreground" /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Card>
-        <Card className="p-5">
-          <div className="flex items-center gap-2 text-sm font-semibold"><Landmark className="h-4 w-4 text-brand" /> Remit via ACH / Wire</div>
-          <dl className="mt-4 space-y-3 text-sm">
-            {[["Bank", s.bankName], ["Routing (ABA)", s.routing], ["Account", "••••" + s.account.slice(-4)], ["SWIFT", s.swift], ["Beneficiary", "PropStream Technologies, Inc."]].map(([k, v]) => (
-              <div key={k}><dt className="text-xs text-muted-foreground">{k}</dt><dd className="font-mono">{v}</dd></div>
-            ))}
-          </dl>
-        </Card>
-      </div>
-    </>
-  );
-}
