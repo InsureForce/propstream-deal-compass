@@ -52,7 +52,7 @@ export function PortalApp() {
   const ref = useRef<HTMLDivElement>(null);
   const [settings, set] = useState<Settings>({
     logoText: "PropStream",
-    accent: ACCENTS[0].value,
+    accent: ACCENTS[0]!.value,
     theme: "light",
     aiEnabled: true,
     taxEnabled: true,

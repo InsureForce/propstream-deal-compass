@@ -181,7 +181,7 @@ function FirmDashboard() {
 /* ---------------- Broker ---------------- */
 function BrokerDashboard() {
   const { settings, go } = usePortal();
-  const me = brokers[0];
+  const me = brokers[0]!;
   const mine = [...stnlDeals.filter((d) => d.broker === ME).map((d) => ({ name: `${d.tenant} — ${d.city}`, price: d.price, stage: d.stage, type: "STNL" })),
     ...iosDeals.filter((d) => d.broker === ME).map((d) => ({ name: `${d.site} — ${d.city}`, price: d.price, stage: d.stage, type: "IOS" }))];
   const myEx = exchanges.filter((e) => e.broker === ME);
@@ -333,11 +333,11 @@ function TaxClock() {
   );
 }
 
-const SUGGESTIONS = ["Draft an OM summary for Starbucks — Frisco, TX", "Compare cap rates for Dollar General in GA", "Find 1031 replacements for Henderson Trust under $4.5M"];
+const SUGGESTIONS: string[] = ["Draft an OM summary for Starbucks — Frisco, TX", "Compare cap rates for Dollar General in GA", "Find 1031 replacements for Henderson Trust under $4.5M"];
 const REPLIES: Record<string, string> = {
-  [SUGGESTIONS[0]]: "Offering Summary — Starbucks, 8,950 Preston Rd, Frisco TX. $3,150,000 at a 5.35% cap ($168,525 NOI). 10-year corporate NNN lease with 10% bumps every 5 years, drive-thru pad on a 0.92-acre outparcel. Trade area: 142K population within 3 miles, $134K AHHI. Tenant: Starbucks Corp (S&P BBB+).",
-  [SUGGESTIONS[1]]: "Trailing-12 Dollar General comps in Georgia: median cap 6.62% (n=14). Range 6.15% (McDonough, 15-yr) to 7.40% (rural Waycross, 7 yrs remaining). Your McDonough close at 6.75% priced ~13 bps wide of median, consistent with its 2019 vintage.",
-  [SUGGESTIONS[2]]: "3 matches: (1) Wawa — Brandon, FL $6.4M — exceeds budget, consider TIC. (2) O'Reilly — Gastonia, NC $2.24M at 5.90%. (3) Chick-fil-A GL — Gilbert, AZ $4.275M at 4.25%. Option 3 fully absorbs $4.2M proceeds with minimal boot.",
+  [SUGGESTIONS[0] as string]: "Offering Summary — Starbucks, 8,950 Preston Rd, Frisco TX. $3,150,000 at a 5.35% cap ($168,525 NOI). 10-year corporate NNN lease with 10% bumps every 5 years, drive-thru pad on a 0.92-acre outparcel. Trade area: 142K population within 3 miles, $134K AHHI. Tenant: Starbucks Corp (S&P BBB+).",
+  [SUGGESTIONS[1] as string]: "Trailing-12 Dollar General comps in Georgia: median cap 6.62% (n=14). Range 6.15% (McDonough, 15-yr) to 7.40% (rural Waycross, 7 yrs remaining). Your McDonough close at 6.75% priced ~13 bps wide of median, consistent with its 2019 vintage.",
+  [SUGGESTIONS[2] as string]: "3 matches: (1) Wawa — Brandon, FL $6.4M — exceeds budget, consider TIC. (2) O'Reilly — Gastonia, NC $2.24M at 5.90%. (3) Chick-fil-A GL — Gilbert, AZ $4.275M at 4.25%. Option 3 fully absorbs $4.2M proceeds with minimal boot.",
 };
 
 function Copilot() {
