@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { DollarSign, Activity, Building, Users, Target, Timer, Sparkles, Send, Palette, Settings2, FileText, Landmark, Download, Lock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { usePortal, ACCENTS } from "./PortalApp";
+import { usePortal, ACCENTS } from "./context";
 import { activity, agents, brokers, daysBetween, exchanges, fmtM, fmtUSD, invoices, iosDeals, offices, stnlDeals, TODAY, type NavKey } from "./data";
 import { Underwriting } from "./Underwriting";
 import { Badge, Card, CardHeader, Field, inputCls, PageHeader, Progress, Stat, Toggle } from "./ui";
