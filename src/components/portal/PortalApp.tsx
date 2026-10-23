@@ -1,34 +1,9 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PortalCtx, ACCENTS, type Settings } from "./context";
 import { Building2, ChevronDown, LayoutDashboard, Store, Warehouse, Timer, Sparkles, CreditCard, Check, ShieldCheck, Briefcase, User, Bell, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DEFAULT_SOW, type NavKey, type Role } from "./data";
 import { Views } from "./Views";
-
-export type Settings = {
-  logoText: string;
-  accent: string;
-  theme: "light" | "dark";
-  aiEnabled: boolean;
-  taxEnabled: boolean;
-  bankName: string;
-  routing: string;
-  account: string;
-  swift: string;
-  sow: string;
-};
-
-type Ctx = { settings: Settings; setSettings: (s: Partial<Settings>) => void; role: Role; go: (k: NavKey) => void };
-const PortalCtx = createContext<Ctx>(null!);
-export const usePortal = () => useContext(PortalCtx);
-
-export const ACCENTS = [
-  { name: "Emerald", value: "oklch(0.62 0.15 160)" },
-  { name: "Cobalt", value: "oklch(0.55 0.19 255)" },
-  { name: "Copper", value: "oklch(0.62 0.15 50)" },
-  { name: "Crimson", value: "oklch(0.56 0.2 20)" },
-  { name: "Gold", value: "oklch(0.72 0.14 85)" },
-  { name: "Slate", value: "oklch(0.4 0.03 260)" },
-];
 
 const roles: { key: Role; label: string; desc: string; icon: typeof User }[] = [
   { key: "CompanyAdmin", label: "Company Admin", desc: "SaaS provider control panel", icon: ShieldCheck },
