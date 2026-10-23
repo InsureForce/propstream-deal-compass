@@ -74,3 +74,18 @@ export const fmtUSD = (n: number) => n.toLocaleString("en-US", { style: "currenc
 
 export const TODAY = new Date("2026-10-23");
 export const daysBetween = (a: Date, b: Date) => Math.round((b.getTime() - a.getTime()) / 86400000);
+
+export const agents = [
+  { name: "Marcus Delgado", office: "Dallas–Fort Worth", closed: 4, volume: 14.8, deals: ["Starbucks — Frisco", "Walgreens — Arlington", "I-20 Laydown"] },
+  { name: "Rachel Kim", office: "Phoenix", closed: 4, volume: 11.3, deals: ["Chick-fil-A GL — Gilbert", "Tolleson Yard"] },
+  { name: "Tyler Brooks", office: "Atlanta", closed: 3, volume: 9.7, deals: ["Dollar General — McDonough", "Fulton Industrial Lot"] },
+  { name: "Elena Vasquez", office: "Charlotte", closed: 3, volume: 8.4, deals: ["O'Reilly — Gastonia"] },
+  { name: "Jordan Whitfield", office: "Tampa", closed: 3, volume: 6.9, deals: ["Wawa — Brandon", "Port Tampa Yard"] },
+  { name: "Priya Raman", office: "Dallas–Fort Worth", closed: 3, volume: 6.2, deals: ["Take 5 Oil — McKinney", "AutoZone — Denton"] },
+  { name: "Caleb Morrison", office: "Phoenix", closed: 3, volume: 5.6, deals: ["Raising Cane's — Chandler"] },
+  { name: "Danielle Ortiz", office: "Atlanta", closed: 3, volume: 4.9, deals: ["Tractor Supply — Cumming", "Marietta IOS"] },
+  { name: "Brandon Huang", office: "Charlotte", closed: 3, volume: 4.3, deals: ["Aldi — Concord"] },
+  { name: "Natalie Fischer", office: "Tampa", closed: 2, volume: 3.8, deals: ["7-Eleven — Lakeland"] },
+  { name: "Omar Haddad", office: "Dallas–Fort Worth", closed: 2, volume: 3.2, deals: ["Lancaster Truck Yard"] },
+  { name: "Sophie Laurent", office: "Phoenix", closed: 2, volume: 2.9, deals: ["Dutch Bros — Mesa"] },
+];
