@@ -2,7 +2,8 @@ import { useState } from "react";
 import { DollarSign, Activity, Building, Users, Target, Timer, Sparkles, Send, Palette, Settings2, FileText, Landmark, Download, Lock, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePortal, ACCENTS } from "./PortalApp";
-import { activity, brokers, daysBetween, exchanges, fmtM, fmtUSD, invoices, iosDeals, offices, stnlDeals, TODAY, type NavKey } from "./data";
+import { activity, agents, brokers, daysBetween, exchanges, fmtM, fmtUSD, invoices, iosDeals, offices, stnlDeals, TODAY, type NavKey } from "./data";
+import { Underwriting } from "./Underwriting";
 import { Badge, Card, CardHeader, Field, inputCls, PageHeader, Progress, Stat, Toggle } from "./ui";
 
 const ME = "Marcus Delgado";
@@ -122,11 +123,12 @@ function FirmDashboard() {
     <>
       <PageHeader eyebrow="Meridian Commercial Realty" title="Firm Overview" sub="Company-wide production across 5 regional offices · FY 2026" />
       <div className="grid gap-4 md:grid-cols-4">
-        <Stat label="Total Volume" value="$82M" delta="+18.4% vs FY25" icon={<DollarSign className="h-4 w-4" />} />
-        <Stat label="Active Transactions" value="47" delta="+6 this month" icon={<Activity className="h-4 w-4" />} />
-        <Stat label="Regional Offices" value="5" icon={<Building className="h-4 w-4" />} />
-        <Stat label="Licensed Brokers" value="31" delta="+3 onboarded Q3" icon={<Users className="h-4 w-4" />} />
+        <Stat label="Total Firm Volume" value="$82M" delta="+18.4% vs FY25" icon={<DollarSign className="h-4 w-4" />} />
+        <Stat label="Total Closed Assets" value="35" delta="+4 this month" icon={<Building className="h-4 w-4" />} />
+        <Stat label="Firm Revenue YTD" value="$4.2M" icon={<TrendingUp className="h-4 w-4" />} />
+        <Stat label="Active Agents" value="12" icon={<Users className="h-4 w-4" />} />
       </div>
+      <Underwriting />
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader title="Active Transactions by Office" sub="Volume in $M" />
@@ -155,20 +157,19 @@ function FirmDashboard() {
         </Card>
       </div>
       <Card className="mt-6">
-        <CardHeader title="Broker Tracking" sub="Year-to-date production vs. GCI target" />
+        <CardHeader title="Active Office Agents" sub="12 producing agents · individual production lists" />
         <table className="w-full text-sm">
           <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <tr className="border-b"><th className="px-5 py-3 font-medium">Broker</th><th className="font-medium">Office</th><th className="font-medium">YTD Volume</th><th className="font-medium">Deals</th><th className="font-medium">GCI</th><th className="w-48 pr-5 font-medium">Target</th></tr>
+            <tr className="border-b"><th className="px-5 py-3 font-medium">Agent</th><th className="font-medium">Office</th><th className="font-medium">Production</th><th className="font-medium">Closed</th><th className="pr-5 font-medium">Volume</th></tr>
           </thead>
           <tbody className="divide-y">
-            {brokers.map((b) => (
-              <tr key={b.name} className="transition hover:bg-muted/50">
-                <td className="px-5 py-3.5 font-medium">{b.name}</td>
-                <td className="text-muted-foreground">{b.office}</td>
-                <td className="font-mono">${b.ytd.toFixed(1)}M</td>
-                <td className="font-mono">{b.deals}</td>
-                <td className="font-mono">{fmtUSD(b.gci)}</td>
-                <td className="pr-5"><div className="flex items-center gap-2"><Progress value={(b.gci / b.target) * 100} /><span className="w-9 text-right font-mono text-xs">{Math.round((b.gci / b.target) * 100)}%</span></div></td>
+            {agents.map((a) => (
+              <tr key={a.name} className="align-top transition hover:bg-muted/50">
+                <td className="px-5 py-3.5 font-medium">{a.name}</td>
+                <td className="py-3.5 text-muted-foreground">{a.office}</td>
+                <td className="py-3.5"><div className="flex flex-wrap gap-1">{a.deals.map((d) => <span key={d} className="rounded-sm border bg-muted/40 px-1.5 py-0.5 text-[11px]">{d}</span>)}</div></td>
+                <td className="py-3.5 font-mono">{a.closed}</td>
+                <td className="py-3.5 pr-5 font-mono">${a.volume.toFixed(1)}M</td>
               </tr>
             ))}
           </tbody>
@@ -189,11 +190,12 @@ function BrokerDashboard() {
     <>
       <PageHeader eyebrow="Good evening, Marcus" title="My Desk" sub="Dallas–Fort Worth office · Net lease & industrial outdoor storage" />
       <div className="grid gap-4 md:grid-cols-4">
-        <Stat label="YTD Volume" value="$14.8M" delta="#1 in firm" icon={<TrendingUp className="h-4 w-4" />} />
-        <Stat label="Active Pipeline" value={fmtM(mine.reduce((a, d) => a + d.price, 0))} icon={<Activity className="h-4 w-4" />} />
-        <Stat label="GCI Earned" value="$412K" icon={<DollarSign className="h-4 w-4" />} />
-        <Stat label="1031 Clients" value={String(myEx.length)} icon={<Timer className="h-4 w-4" />} />
+        <Stat label="Personal Active Pipeline" value="$6.2M" icon={<Activity className="h-4 w-4" />} />
+        <Stat label="Commissions Earned" value="$180K" delta="+$42K this quarter" icon={<DollarSign className="h-4 w-4" />} />
+        <Stat label="Deals Closed" value="4" icon={<TrendingUp className="h-4 w-4" />} />
+        <Stat label="Active 1031 Buyers" value="3" icon={<Timer className="h-4 w-4" />} />
       </div>
+      <Underwriting />
       <div className="mt-6 grid gap-6 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <CardHeader title="My Active Pipeline" />
