@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { usePortal, ACCENTS } from "./context";
 import { activity, agents, brokers, daysBetween, exchanges, fmtM, fmtUSD, invoices, iosDeals, offices, stnlDeals, TODAY, type NavKey } from "./data";
 import { Underwriting } from "./Underwriting";
+import { DealBoard } from "./DealBoard";
 import { Badge, Card, CardHeader, Field, inputCls, PageHeader, Progress, Stat, Toggle } from "./ui";
 
 const ME = "Marcus Delgado";
@@ -15,8 +16,8 @@ export function Views({ view }: { view: NavKey }) {
   switch (view) {
     case "overview":
       return role === "CompanyAdmin" ? <AdminConsole /> : role === "BrokerAdmin" ? <FirmDashboard /> : <BrokerDashboard />;
-    case "stnl": return <StnlPipeline />;
-    case "ios": return <IosPipeline />;
+    case "stnl": return <DealBoard initial="stnl" />;
+    case "ios": return <DealBoard initial="ios" />;
     case "tax": return <TaxClock />;
     case "ai": return <Copilot />;
     case "billing": return <Billing />;
@@ -242,58 +243,6 @@ function BrokerDashboard() {
 }
 
 /* ---------------- Shared modules ---------------- */
-function StnlPipeline() {
-  const { role } = usePortal();
-  const rows = role === "Broker" ? stnlDeals.filter((d) => d.broker === ME) : stnlDeals;
-  return (
-    <>
-      <PageHeader eyebrow="Single-Tenant Net Lease" title="STNL Pipeline" sub={`${rows.length} deals · ${fmtM(rows.reduce((a, d) => a + d.price, 0))} aggregate`} />
-      <Card>
-        <table className="w-full text-sm">
-          <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
-            <tr className="border-b"><th className="px-5 py-3 font-medium">Tenant</th><th className="font-medium">Market</th><th className="font-medium">Price</th><th className="font-medium">Cap</th><th className="font-medium">Lease</th><th className="font-medium">Broker</th><th className="pr-5 font-medium">Stage</th></tr>
-          </thead>
-          <tbody className="divide-y">
-            {rows.map((d) => (
-              <tr key={d.tenant + d.city} className="transition hover:bg-muted/50">
-                <td className="px-5 py-3.5 font-medium">{d.tenant}</td><td className="text-muted-foreground">{d.city}</td>
-                <td className="font-mono">{fmtUSD(d.price)}</td><td className="font-mono">{d.cap.toFixed(2)}%</td>
-                <td className="text-muted-foreground">{d.term}</td><td>{d.broker}</td><td className="pr-5"><Badge>{d.stage}</Badge></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
-    </>
-  );
-}
-
-function IosPipeline() {
-  const { role } = usePortal();
-  const rows = role === "Broker" ? iosDeals.filter((d) => d.broker === ME) : iosDeals;
-  return (
-    <>
-      <PageHeader eyebrow="Industrial Outdoor Storage" title="IOS Pipeline" sub={`${rows.reduce((a, d) => a + d.acres, 0).toFixed(1)} acres under management`} />
-      <div className="grid gap-4 md:grid-cols-2">
-        {rows.map((d) => (
-          <Card key={d.site} className="p-5 transition hover:border-brand">
-            <div className="flex items-start justify-between">
-              <div><div className="font-semibold">{d.site}</div><div className="text-sm text-muted-foreground">{d.city}</div></div>
-              <Badge>{d.stage}</Badge>
-            </div>
-            <div className="mt-6 grid grid-cols-3 gap-4 border-t pt-4 text-sm">
-              <div><div className="text-xs text-muted-foreground">Price</div><div className="font-mono">{fmtM(d.price)}</div></div>
-              <div><div className="text-xs text-muted-foreground">Acres</div><div className="font-mono">{d.acres}</div></div>
-              <div><div className="text-xs text-muted-foreground">$/Acre</div><div className="font-mono">{fmtUSD(d.price / d.acres)}</div></div>
-            </div>
-            <div className="mt-4 text-xs text-muted-foreground">{d.use} · {d.broker}</div>
-          </Card>
-        ))}
-      </div>
-    </>
-  );
-}
-
 function ExchangeList({ list }: { list: typeof exchanges }) {
   return (
     <ul className="divide-y">
