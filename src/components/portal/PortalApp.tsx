@@ -53,7 +53,7 @@ export function PortalApp() {
         className={cn("flex min-h-screen w-full bg-background text-foreground", settings.theme === "dark" && "dark")}
         style={{ ["--brand" as string]: settings.accent }}
       >
-        <aside className="sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
+        <aside className="print:hidden sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
           <div className="flex items-center gap-2.5 px-6 py-6">
             <div className="grid h-8 w-8 place-items-center rounded-md bg-brand text-brand-foreground">
               <Building2 className="h-4 w-4" />
@@ -124,7 +124,7 @@ export function PortalApp() {
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-background/80 px-10 backdrop-blur">
+          <header className="print:hidden sticky top-0 z-10 flex h-14 items-center justify-between border-b bg-background/80 px-10 backdrop-blur">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Search className="h-4 w-4" />
               <span>Search deals, tenants, clients…</span>
