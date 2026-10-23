@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DollarSign, Activity, Building, Users, Target, Timer, Sparkles, Send, Palette, Settings2, FileText, Landmark, Download, Lock, TrendingUp } from "lucide-react";
+import { DollarSign, Activity, Building, Users, Target, Timer, Sparkles, Send, Palette, Settings2, FileText, Landmark, Download, Lock, TrendingUp, X, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePortal, ACCENTS } from "./context";
 import { activity, agents, brokers, daysBetween, exchanges, fmtM, fmtUSD, invoices, iosDeals, offices, stnlDeals, TODAY, type NavKey } from "./data";
@@ -121,8 +121,11 @@ function AdminConsole() {
 }
 
 /* ---------------- BrokerAdmin ---------------- */
+type Agent = (typeof agents)[number];
+
 function FirmDashboard() {
   const max = Math.max(...offices.map((o) => o.volume));
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   return (
     <>
       <PageHeader eyebrow="Meridian Commercial Realty" title="Firm Overview" sub="Company-wide production across 5 regional offices · FY 2026" />
@@ -168,7 +171,7 @@ function FirmDashboard() {
           </thead>
           <tbody className="divide-y">
             {agents.map((a) => (
-              <tr key={a.name} className="align-top transition hover:bg-muted/50">
+              <tr key={a.name} onClick={() => setSelectedAgent(a)} className="cursor-pointer align-top transition hover:bg-muted/50">
                 <td className="px-5 py-3.5 font-medium">{a.name}</td>
                 <td className="py-3.5 text-muted-foreground">{a.office}</td>
                 <td className="py-3.5"><div className="flex flex-wrap gap-1">{a.deals.map((d) => <span key={d} className="rounded-sm border bg-muted/40 px-1.5 py-0.5 text-[11px]">{d}</span>)}</div></td>
@@ -179,7 +182,66 @@ function FirmDashboard() {
           </tbody>
         </table>
       </Card>
+      {selectedAgent && <AgentPanel agent={selectedAgent} onClose={() => setSelectedAgent(null)} />}
     </>
+  );
+}
+
+function AgentPanel({ agent, onClose }: { agent: Agent; onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex justify-end">
+      <div className="fade-in absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="slide-in-right relative flex h-full w-full max-w-md flex-col bg-card shadow-2xl">
+        <div className="flex items-center justify-between border-b px-6 py-4">
+          <h3 className="text-sm font-semibold tracking-tight">Agent Profile</h3>
+          <button onClick={onClose} className="rounded-md p-1.5 transition hover:bg-muted" aria-label="Close panel">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex items-center gap-3">
+            <div className="grid h-12 w-12 place-items-center rounded-full bg-brand text-sm font-semibold text-brand-foreground">
+              {agent.name.split(" ").map((n) => n[0]).join("")}
+            </div>
+            <div>
+              <div className="text-lg font-semibold">{agent.name}</div>
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5" /> {agent.office}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <span className="inline-flex items-center rounded-md border border-brand/30 bg-brand/10 px-3 py-1.5 text-sm font-medium text-brand">
+              Current Split Ratio: 70/30
+            </span>
+          </div>
+
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="rounded-md border bg-muted/30 p-4">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">Total Closed Volume</div>
+              <div className="mt-2 font-display text-2xl tracking-tight">${agent.volume.toFixed(1)}M</div>
+            </div>
+            <div className="rounded-md border bg-muted/30 p-4">
+              <div className="text-xs uppercase tracking-wider text-muted-foreground">Deals Closed</div>
+              <div className="mt-2 font-display text-2xl tracking-tight">{agent.closed}</div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <div className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">Production History</div>
+            <ul className="space-y-2">
+              {agent.deals.map((d) => (
+                <li key={d} className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2.5 text-sm">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-brand" />
+                  {d}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

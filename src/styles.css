@@ -135,6 +135,24 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@utility slide-in-right {
+  animation: slideInRight 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@utility fade-in {
+  animation: fadeIn 0.3s ease;
+}
+
 @media print {
   @page { size: letter; margin: 0.6in; }
   body { background: white; }

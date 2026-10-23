@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { DEFAULT_SOW, type NavKey, type Role } from "./data";
 import { Views } from "./Views";
 
-const roles: { key: Role; label: string; desc: string; icon: typeof User }[] = [
+const allRoles: { key: Role; label: string; desc: string; icon: typeof User }[] = [
   { key: "CompanyAdmin", label: "Company Admin", desc: "SaaS provider control panel", icon: ShieldCheck },
   { key: "BrokerAdmin", label: "Broker Admin", desc: "Firm principal · Meridian CRE", icon: Briefcase },
   { key: "Broker", label: "Broker", desc: "Marcus Delgado · DFW", icon: User },
@@ -45,7 +45,9 @@ export function PortalApp() {
     return () => document.removeEventListener("mousedown", h);
   }, []);
 
-  const current = roles.find((r) => r.key === role)!;
+  const isAdminParam = new URLSearchParams(window.location.search).get("admin") === "true";
+  const roles = allRoles.filter((r) => r.key !== "CompanyAdmin" || isAdminParam);
+  const current = allRoles.find((r) => r.key === role)!;
 
   return (
     <PortalCtx.Provider value={{ settings, setSettings, role, go: setView }}>
@@ -119,7 +121,7 @@ export function PortalApp() {
 
           <div className="m-4 rounded-md border border-sidebar-border p-4">
             <div className="text-xs text-sidebar-muted">Meridian Commercial Realty</div>
-            <div className="mt-1 text-sm font-medium">Enterprise · 31 seats</div>
+            <div className="mt-1 text-sm font-medium">Enterprise · 12 Active Seats</div>
           </div>
         </aside>
 
